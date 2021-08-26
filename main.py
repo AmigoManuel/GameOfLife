@@ -35,8 +35,6 @@ class Cell:
 
 
 class Board:
-    cells = []
-
     def __init__(self, cells, width, height, centerX, centerY):
         self.cells = cells
         self.width = width
@@ -45,41 +43,33 @@ class Board:
         self.centerY = centerY
     
     def setNextState(self):
-        for row, cellSet in enumerate(self.cells):
-            for col, cell in enumerate(cellSet):
+        for cellSet in self.cells:
+            for cell in cellSet:
                 cell.alive = cell.nextState
 
     def calcNextState(self):
-        for row, cellSet in enumerate(self.cells):
-            for col, cell in enumerate(cellSet):
+        for cellSet in self.cells:
+            for cell in cellSet:
                 cell.aliveNext = 0
-                if cell.u != None:
-                    if cell.u.alive:
+                if cell.u != None and cell.u.alive:
                         cell.aliveNext = cell.aliveNext + 1
-                if cell.d != None:
-                    if cell.d.alive:
+                if cell.d != None and cell.d.alive:
                         cell.aliveNext = cell.aliveNext + 1
-                if cell.l != None:
-                    if cell.l.alive:
+                if cell.l != None and cell.l.alive:
                         cell.aliveNext = cell.aliveNext + 1
-                if cell.r != None:
-                    if cell.r.alive:
+                if cell.r != None and cell.r.alive:
                         cell.aliveNext = cell.aliveNext + 1
-                if cell.rUp != None:
-                    if cell.rUp.alive:
+                if cell.rUp != None and cell.rUp.alive:
                         cell.aliveNext = cell.aliveNext + 1
-                if cell.rDown != None:
-                    if cell.rDown.alive:
+                if cell.rDown != None and cell.rDown.alive:
                         cell.aliveNext = cell.aliveNext + 1
-                if cell.lUp != None:
-                    if cell.lUp.alive:
+                if cell.lUp != None and cell.lUp.alive:
                         cell.aliveNext = cell.aliveNext + 1
-                if cell.lDown != None:
-                    if cell.lDown.alive:
+                if cell.lDown != None and cell.lDown.alive:
                         cell.aliveNext = cell.aliveNext + 1
-        
-        for row, cellSet in enumerate(self.cells):
-            for col, cell in enumerate(cellSet):
+        # Conditions
+        for cellSet in self.cells:
+            for cell in cellSet:
                 if cell.alive:
                     # Si una célula está viva y tiene dos o tres vecinas vivas, sobrevive.
                     if cell.aliveNext == 2 or cell.aliveNext == 3:
@@ -104,23 +94,24 @@ class Board:
                     cell.r = cellSet[col + 1]
                 if col > 0:
                     cell.l = cellSet[col - 1]
-                # Condición de borde Up, Down
-                if row > 0:
-                    cell.u = self.cells[row - 1][col]
+                # Condición de borde Down
                 if row < lastRow:
                     cell.d = self.cells[row + 1][col]
-                # Condición rDown
-                if row < lastRow and col < lastCol:
-                    cell.rDown = self.cells[row + 1][col + 1]
-                # Condición lDown
-                if row < lastRow and col > 0:
-                    cell.lDown = self.cells[row + 1][col - 1]
-                # Condición rUp
-                if row > 0 and col < lastCol:
-                    cell.rUp = self.cells[row - 1][col + 1]
-                # Condición lUp
-                if row > 0 and col > 0:
-                    cell.lUp = self.cells[row - 1][col - 1]
+                    # Condición rDown
+                    if col < lastCol:
+                        cell.rDown = self.cells[row + 1][col + 1]
+                    # Condición lDown
+                    if col > 0:
+                        cell.lDown = self.cells[row + 1][col - 1]
+                # Condición de borde Up
+                if row > 0:
+                    cell.u = self.cells[row - 1][col]
+                    # Condición rUp
+                    if col < lastCol:
+                        cell.rUp = self.cells[row - 1][col + 1]
+                    # Condición lUp
+                    if col > 0:
+                        cell.lUp = self.cells[row - 1][col - 1]
 
     def drawBoard(self, screen):
         x, y = self.centerX, self.centerY
@@ -132,32 +123,31 @@ class Board:
                     x = self.centerX
                     y = y + cell.height
 
-#---#
+# Init Cells
 cells = []
-for _i in range(const.BSIZE):
+for _ in range(const.BSIZE):
     cellSet = []
-    for _j in range(const.BSIZE):
+    for _ in range(const.BSIZE):
         cellSet.append(Cell(False, 20, 20))
     cells.append(cellSet)
 
+# Init Board
 board = Board(cells, const.BSIZE, const.BSIZE, 100, 100)
+
+# Calculate References to other cells
 board.calcReferences()
 
-""" for i in range(1000):
-    r1 = random.randint(0,const.BSIZE - 1)
-    r2 = random.randint(0,const.BSIZE - 1)
-    board.cells[r1][r2].alive = True """
-
-#patterns.setupGosperGliderGun(board)
+# Beauty patterns
+#patterns.setUpDefault(board)
 #patterns.setUpMix(board)
-patterns.setUpDefault(board)
+patterns.setupGosperGliderGun(board)
 
+# Execute game
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
     screen.fill(const.BLACK)
     board.drawBoard(screen)
     board.calcNextState()
