@@ -140,7 +140,7 @@ board.calcReferences()
 # Beauty patterns
 #patterns.setUpDefault(board)
 #patterns.setUpMix(board)
-patterns.setupGosperGliderGun(board)
+patterns.setUpGosperGliderGun(board)
 
 # Execute game
 while 1:
