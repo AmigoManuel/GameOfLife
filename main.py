@@ -2,7 +2,6 @@ import sys
 import pygame
 from pygame import draw
 from pygame.display import update
-import random
 import constants as const
 import patterns
 
@@ -128,7 +127,7 @@ cells = []
 for _ in range(const.BSIZE):
     cellSet = []
     for _ in range(const.BSIZE):
-        cellSet.append(Cell(False, 20, 20))
+        cellSet.append(Cell(False, 10, 10))
     cells.append(cellSet)
 
 # Init Board
