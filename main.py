@@ -1,27 +1,16 @@
 import sys
 import pygame
-from pygame import color
 from pygame import draw
 from pygame.display import update
 import random
+import constants as const
+import patterns
 
 pygame.init()
 
-# FPS
-FPS = 20
 fpsClock = pygame.time.Clock()
-# Window size
-size = width, height = 1200, 1050
-# Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-# Board size
-bSize = 44
 
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(const.WSIZE)
 
 
 class Cell:
@@ -39,10 +28,10 @@ class Cell:
     def drawCell(self, screen, x, y):
         if self.alive:
             pygame.draw.rect(
-                screen, WHITE, [x, y, self.width-2, self.height-2])
+                screen, const.WHITE, [x, y, self.width-2, self.height-2])
         else:
             pygame.draw.rect(
-                screen, WHITE, [x, y, self.width, self.height], 2)
+                screen, const.WHITE, [x, y, self.width, self.height], 2)
 
 
 class Board:
@@ -145,76 +134,23 @@ class Board:
 
 #---#
 cells = []
-for _i in range(bSize):
+for _i in range(const.BSIZE):
     cellSet = []
-    for _j in range(bSize):
+    for _j in range(const.BSIZE):
         cellSet.append(Cell(False, 20, 20))
     cells.append(cellSet)
 
-board = Board(cells, bSize, bSize, 100, 100)
+board = Board(cells, const.BSIZE, const.BSIZE, 100, 100)
 board.calcReferences()
 
 """ for i in range(1000):
-    r1 = random.randint(0,bSize - 1)
-    r2 = random.randint(0,bSize - 1)
+    r1 = random.randint(0,const.BSIZE - 1)
+    r2 = random.randint(0,const.BSIZE - 1)
     board.cells[r1][r2].alive = True """
 
-""" board.cells[5][6].alive = True
-board.cells[5][5].alive = True
-board.cells[4][5].alive = True
-board.cells[6][5].alive = True
-board.cells[4][4].alive = True """
-
-""" board.cells[5][0].alive = True
-board.cells[5][2].alive = True
-board.cells[4][2].alive = True
-board.cells[3][4].alive = True
-board.cells[2][4].alive = True
-board.cells[1][4].alive = True
-board.cells[0][6].alive = True
-board.cells[1][6].alive = True
-board.cells[2][6].alive = True
-board.cells[1][7].alive = True """
-
-
-board.cells[5][1].alive = True
-board.cells[5][2].alive = True
-board.cells[6][1].alive = True
-board.cells[6][2].alive = True
-board.cells[5][11].alive = True
-board.cells[6][11].alive = True
-board.cells[7][11].alive = True
-board.cells[4][12].alive = True
-board.cells[3][13].alive = True
-board.cells[3][14].alive = True
-board.cells[8][12].alive = True
-board.cells[9][13].alive = True
-board.cells[9][14].alive = True
-board.cells[6][15].alive = True
-board.cells[4][16].alive = True
-board.cells[5][17].alive = True
-board.cells[6][17].alive = True
-board.cells[7][17].alive = True
-board.cells[6][18].alive = True
-board.cells[8][16].alive = True
-board.cells[3][21].alive = True
-board.cells[4][21].alive = True
-board.cells[5][21].alive = True
-board.cells[3][22].alive = True
-board.cells[4][22].alive = True
-board.cells[5][22].alive = True
-board.cells[2][23].alive = True
-board.cells[6][23].alive = True
-board.cells[1][25].alive = True
-board.cells[2][25].alive = True
-board.cells[6][25].alive = True
-board.cells[7][25].alive = True
-board.cells[3][35].alive = True
-board.cells[4][35].alive = True
-board.cells[3][36].alive = True
-board.cells[4][36].alive = True
-
-
+#patterns.setupGosperGliderGun(board)
+#patterns.setUpMix(board)
+patterns.setUpDefault(board)
 
 while 1:
     for event in pygame.event.get():
@@ -222,10 +158,10 @@ while 1:
             pygame.quit()
             sys.exit()
 
-    screen.fill(BLACK)
+    screen.fill(const.BLACK)
     board.drawBoard(screen)
     board.calcNextState()
     board.setNextState()
 
     pygame.display.update()
-    fpsClock.tick(FPS)
+    fpsClock.tick(const.FPS)
